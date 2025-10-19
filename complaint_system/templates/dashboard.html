@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %} Dashboard {% endblock %}
+{% block content  %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h1 class="h4 mb-0">Welcome, {{ user.username }}</h1>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h2 class="h5 mb-0">Recent Tickets</h2>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-3">Name</th>
+                  <th class="py-3 px-3">Priority</th>
+                  <th class="py-3 px-3">Status</th>
+                  <th class="py-3 px-3">Created On</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ticket in tickets|slice:"5" %}
+                <tr>
+                  <td class="fw-bold px-3">{{ ticket.name }}</td>
+                  <td class="px-3">{{ ticket.priority }}</td>
+                  <td class="px-3">
+                    <span class="badge
+                      {% if ticket.status == 'Pending' %} bg-success
+                      {% elif ticket.status == 'Accepted' %} bg-success
+                      {% elif ticket.status == 'Rejected' %} bg-danger {% endif %}">
+                      {{ ticket.status }}
+                    </span>
+                  </td>
+                  <td class="px-3">{{ ticket.created_at|date:"F d, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-5">You have not created any tickets yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h2 class="h5 mb-0">Recent Complaints</h2>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-3">Complaint</th>
+                  <th class="py-3 px-3">Category</th>
+                  <th class="py-3 px-3">Date</th>
+                  <th class="py-3 px-3">Action Taken</th>
+                  <th class="py-3 px-3">Satisfied</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for complaint in complaints|slice:"5" %}
+                <tr>
+                  <td class="px-3">{{ complaint.description|truncatewords:5 }}</td>
+                  <td class="px-3">{{ complaint.category }}</td>
+                  <td class="px-3">{{ complaint.created_at|date:"d/m/Y, h:i a" }}</td>
+                  <td class="px-3">
+                    <span class="badge
+                      {% if complaint.status == 'Not Taken' %} bg-warning text-dark
+                      {% elif complaint.status == 'In Process' %} bg-info
+                      {% elif complaint.status == 'Solved' %} bg-success
+                      {% elif complaint.status == 'Closed' %} bg-secondary {% endif %}">
+                      {{ complaint.status }}
+                    </span>
+                  </td>
+                  <td class="px-3">
+                    {% if complaint.satisfied %}
+                      <span class="badge bg-success">Yes</span>
+                    {% else %}
+                      <span class="badge bg-danger">No</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-5">You have not filed any complaints yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
